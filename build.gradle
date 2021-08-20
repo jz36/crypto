@@ -28,6 +28,11 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("ch.qos.logback:logback-classic")
     implementation("io.micronaut:micronaut-validation")
+    implementation ("io.micronaut:micronaut-websocket")
+    implementation("io.micronaut.rxjava2:micronaut-rxjava2")
+    implementation("io.micronaut.rxjava2:micronaut-rxjava2-http-client")
+    implementation("co.oril:binance-api-client-java:1.0.3")
+
 
     testImplementation("org.mockito:mockito-core")
 
