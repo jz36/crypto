@@ -1,7 +1,9 @@
 package dev.zykov.model;
 
+import dev.zykov.rest.RestClient;
 import io.micronaut.core.annotation.Introspected;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -9,18 +11,23 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @AllArgsConstructor
 @Data
 @Introspected
 public class SymbolDepthCache {
 
+    private Long lastUpdateId;
+    private ConcurrentLinkedQueue<DepthResponse> depthResponses;
     private final ConcurrentHashMap<String, NavigableMap<BigDecimal, BigDecimal>> cache;
 
     public SymbolDepthCache() {
         cache = new ConcurrentHashMap<>();
         cache.put("bids", new TreeMap<>(Comparator.reverseOrder()));
         cache.put("asks", new TreeMap<>(Comparator.reverseOrder()));
+        depthResponses = new ConcurrentLinkedQueue<>();
+        lastUpdateId = -1L;
     }
 
     public void putBids(List<List<BigDecimal>> bids) {
@@ -41,5 +48,9 @@ public class SymbolDepthCache {
             else
                 asksMap.put(ask.get(0), ask.get(1));
         });
+    }
+
+    public boolean isCached() {
+        return !lastUpdateId.equals(-1L);
     }
 }

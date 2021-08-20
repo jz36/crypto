@@ -30,13 +30,13 @@ public class DepthResponse {
     private String symbol;
 
     @JsonProperty("U")
-    private Integer firstUpdateId;
+    private Long firstUpdateId;
 
     @JsonProperty("u")
-    private Integer lastUpdateId;
+    private Long lastUpdateId;
 
     @JsonProperty("pu")
-    private Integer lastUpdateIdInLastStream;
+    private Long lastUpdateIdInLastStream;
 
     @JsonProperty("b")
     private List<List<BigDecimal>> bids;

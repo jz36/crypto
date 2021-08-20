@@ -1,3 +1,5 @@
 micronaut:
   application:
     name: crypto
+
+symbols: ethbtc,adabtc,xrpbtc,bnbbtc,dotbtc

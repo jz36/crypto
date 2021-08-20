@@ -3,8 +3,6 @@ package dev.zykov.socket;
 import dev.zykov.model.DepthResponse;
 import dev.zykov.service.DepthCache;
 import io.micronaut.http.HttpRequest;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.websocket.WebSocketSession;
 import io.micronaut.websocket.annotation.ClientWebSocket;
 import io.micronaut.websocket.annotation.OnClose;
@@ -12,12 +10,7 @@ import io.micronaut.websocket.annotation.OnMessage;
 import io.micronaut.websocket.annotation.OnOpen;
 import jakarta.inject.Inject;
 
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.List;
-import java.util.NavigableMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Locale;
 
 @ClientWebSocket("/ws/{symbol}@depth@100ms")
 public abstract class DepthStream implements AutoCloseable{
@@ -38,7 +31,7 @@ public abstract class DepthStream implements AutoCloseable{
 
     @OnMessage
     public void onMessage(DepthResponse message) {
-        depthCache.addCacheValues(message);
+        depthCache.addCacheValues(message.getSymbol().toLowerCase(Locale.ROOT), message);
     }
 
     @OnClose
