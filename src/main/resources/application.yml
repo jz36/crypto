@@ -2,4 +2,4 @@ micronaut:
   application:
     name: crypto
 
-symbols: ethbtc,adabtc,xrpbtc,bnbbtc,dotbtc
+symbols: ethusdt,bnbusdt,maticusdt,adausdt,dogeusdt,dotusdt,uniusdt,solusdt,bchusdt,ltcusdt,linkusdt,xrpusdt,icpusdt,thetausdt,xlmusdt,vetusdt,etcusdt,filusdt,trxusdt,eosusdt,xmrusdt,ksmusdt,aaveusdt,neousdt,bsvusdt,mkrusdt,cakeusdt,iotausdt,algousdt,atomusdt,xtzusdt,avaxusdt,bttusdt,lunausdt,runeusdt,compusdt,hbarusdt,dashusdt,zecusdt

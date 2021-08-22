@@ -32,8 +32,10 @@ public class MainClientSocket {
                 .forEach(symbol -> {
                             if (!streamsMap.containsKey(symbol)) {
                                 streamsMap.put(symbol, webSocketClient.connect(DepthStream.class, String.format("/ws/%s@depth@100ms", symbol)).blockingFirst());
+                            }
+                            if (!depthCache.getDepthCache().get(symbol).isCached()) {
                                 restClient.getDepth(symbol.toUpperCase(Locale.ROOT), 1000)
-                                        .thenAccept(response -> depthCache.applySnapshot(symbol, response));
+                                        .thenAcceptAsync(response -> depthCache.applySnapshot(symbol, response));
                             }
                         }
                 );

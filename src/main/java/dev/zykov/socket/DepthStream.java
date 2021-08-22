@@ -26,7 +26,7 @@ public abstract class DepthStream implements AutoCloseable{
         this.session = session;
         this.request = request;
         this.symbol = symbol;
-        System.out.printf("Open for %s", symbol);
+        System.out.printf("Open for %s\n", symbol);
     }
 
     @OnMessage
