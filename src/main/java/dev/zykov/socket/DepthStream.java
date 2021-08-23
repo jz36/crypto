@@ -10,6 +10,7 @@ import io.micronaut.websocket.annotation.OnMessage;
 import io.micronaut.websocket.annotation.OnOpen;
 import jakarta.inject.Inject;
 
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 @ClientWebSocket("/ws/{symbol}@depth@100ms")
@@ -26,6 +27,7 @@ public abstract class DepthStream implements AutoCloseable{
         this.session = session;
         this.request = request;
         this.symbol = symbol;
+        depthCache.getDepthCache().get(symbol).setStartUpTime(LocalDateTime.now());
         System.out.printf("Open for %s\n", symbol);
     }
 
@@ -36,7 +38,10 @@ public abstract class DepthStream implements AutoCloseable{
 
     @OnClose
     public void onClose() {
-        System.out.printf("Close for %s", symbol);
+        System.out.printf("Close for %s\n", symbol);
     }
 
+    public WebSocketSession getSession() {
+        return session;
+    }
 }

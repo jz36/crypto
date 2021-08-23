@@ -51,5 +51,10 @@ public class DepthCache {
                 });
         symbolDepthCache.setDepthResponses(null);
     }
+
+    public void reCreateCache() {
+        depthCache.clear();
+        symbols.forEach(symbol -> depthCache.put(symbol, new SymbolDepthCache()));
+    }
 }
 

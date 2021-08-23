@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NavigableMap;
@@ -20,6 +21,7 @@ public class SymbolDepthCache {
 
     private Long lastUpdateId;
     private ConcurrentLinkedQueue<DepthResponse> depthResponses;
+    private LocalDateTime startUpTime;
     private final ConcurrentHashMap<String, NavigableMap<BigDecimal, BigDecimal>> cache;
 
     public SymbolDepthCache() {

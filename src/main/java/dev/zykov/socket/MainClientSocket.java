@@ -1,17 +1,15 @@
 package dev.zykov.socket;
 
-import dev.zykov.model.DepthResponse;
 import dev.zykov.rest.RestClient;
 import dev.zykov.service.DepthCache;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.rxjava2.http.client.websockets.RxWebSocketClient;
+import io.micronaut.websocket.CloseReason;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 @Singleton
@@ -41,4 +39,11 @@ public class MainClientSocket {
                 );
     }
 
+    public void closeAllSockets() {
+        streamsMap.forEach((k, v) -> {
+            if (v != null && v.getSession() != null)
+                v.getSession().close(CloseReason.NORMAL);
+        });
+        streamsMap.clear();
+    }
 }
