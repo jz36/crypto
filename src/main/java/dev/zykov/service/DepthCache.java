@@ -55,8 +55,17 @@ public class DepthCache {
         return futureDepthCache;
     }
 
-    public void applySnapshot(String symbol, DepthRestResponse depthRestResponse) {
+    public void applySpotSnapshot(String symbol, DepthRestResponse depthRestResponse) {
         var symbolDepthCache = spotDepthCache.get(symbol);
+        applySnapshot(depthRestResponse, symbolDepthCache);
+    }
+
+    public void applyFutureSnapshot(String symbol, DepthRestResponse depthRestResponse) {
+        var symbolDepthCache = futureDepthCache.get(symbol);
+        applySnapshot(depthRestResponse, symbolDepthCache);
+    }
+
+    private void applySnapshot(DepthRestResponse depthRestResponse, SymbolDepthCache symbolDepthCache) {
         symbolDepthCache.setLastUpdateId(depthRestResponse.getLastUpdateId());
         symbolDepthCache.putBids(depthRestResponse.getBids());
         symbolDepthCache.putAsks(depthRestResponse.getAsks());

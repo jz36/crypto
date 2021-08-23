@@ -32,7 +32,7 @@ public class FutureSocketClient {
                             }
                             if (!depthCache.getFutureDepthCache().get(symbol).isCached()) {
                                 futureRestClient.getDepth(symbol.toUpperCase(Locale.ROOT), 1000)
-                                        .thenAcceptAsync(response -> depthCache.applySnapshot(symbol, response));
+                                        .thenAcceptAsync(response -> depthCache.applyFutureSnapshot(symbol, response));
                             }
                         }
                 );

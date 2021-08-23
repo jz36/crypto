@@ -33,7 +33,7 @@ public class SpotSocketClient {
                             }
                             if (!depthCache.getSpotDepthCache().get(symbol).isCached()) {
                                 spotRestClient.getDepth(symbol.toUpperCase(Locale.ROOT), 1000)
-                                        .thenAcceptAsync(response -> depthCache.applySnapshot(symbol, response));
+                                        .thenAcceptAsync(response -> depthCache.applySpotSnapshot(symbol, response));
                             }
                         }
                 );
