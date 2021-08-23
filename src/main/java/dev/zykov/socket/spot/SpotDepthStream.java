@@ -29,7 +29,6 @@ public abstract class SpotDepthStream implements AutoCloseable{
         this.session = session;
         this.request = request;
         this.symbol = symbol;
-        depthCache.getSpotDepthCache().get(symbol).setStartUpTime(LocalDateTime.now());
         log.info("Open spot depth for {}", symbol);
     }
 

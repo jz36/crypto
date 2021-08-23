@@ -29,7 +29,6 @@ public abstract class FutureDepthStream implements AutoCloseable{
         this.session = session;
         this.request = request;
         this.symbol = symbol;
-        depthCache.getFutureDepthCache().get(symbol).setStartUpTime(LocalDateTime.now());
         log.info("Open future depth for {}", symbol);
     }
 

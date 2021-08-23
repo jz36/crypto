@@ -20,7 +20,6 @@ public class SymbolDepthCache {
 
     private Long lastUpdateId;
     private ConcurrentLinkedQueue<DepthResponse> depthResponses;
-    private LocalDateTime startUpTime;
     private final ConcurrentHashMap<String, NavigableMap<BigDecimal, BigDecimal>> cache;
 
     public SymbolDepthCache() {
