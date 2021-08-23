@@ -1,4 +1,4 @@
-package dev.zykov.socket;
+package dev.zykov.socket.future;
 
 import dev.zykov.model.DepthResponse;
 import dev.zykov.service.DepthCache;
@@ -9,12 +9,14 @@ import io.micronaut.websocket.annotation.OnClose;
 import io.micronaut.websocket.annotation.OnMessage;
 import io.micronaut.websocket.annotation.OnOpen;
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.Locale;
 
+@Slf4j
 @ClientWebSocket("/ws/{symbol}@depth@100ms")
-public abstract class DepthStream implements AutoCloseable{
+public abstract class FutureDepthStream implements AutoCloseable{
 
     private WebSocketSession session;
     private HttpRequest request;
@@ -27,18 +29,18 @@ public abstract class DepthStream implements AutoCloseable{
         this.session = session;
         this.request = request;
         this.symbol = symbol;
-        depthCache.getDepthCache().get(symbol).setStartUpTime(LocalDateTime.now());
-        System.out.printf("Open for %s\n", symbol);
+        depthCache.getFutureDepthCache().get(symbol).setStartUpTime(LocalDateTime.now());
+        log.info("Open future depth for {}", symbol);
     }
 
     @OnMessage
     public void onMessage(DepthResponse message) {
-        depthCache.addCacheValues(message.getSymbol().toLowerCase(Locale.ROOT), message);
+        depthCache.addFutureCacheValues(message.getSymbol().toLowerCase(Locale.ROOT), message);
     }
 
     @OnClose
     public void onClose() {
-        System.out.printf("Close for %s\n", symbol);
+        log.info("Close future depth for {}", symbol);
     }
 
     public WebSocketSession getSession() {

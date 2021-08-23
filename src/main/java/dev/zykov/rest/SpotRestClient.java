@@ -8,7 +8,7 @@ import io.micronaut.http.client.annotation.Client;
 import java.util.concurrent.CompletableFuture;
 
 @Client("https://api.binance.com")
-public interface RestClient {
+public interface SpotRestClient {
 
     @Get("/api/v3/depth")
     CompletableFuture<DepthRestResponse> getDepth(@QueryValue String symbol, @QueryValue Integer limit);

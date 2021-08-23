@@ -13,16 +13,30 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DepthCache {
 
     private List<String> symbols;
-    private final ConcurrentHashMap<String, SymbolDepthCache> depthCache;
+    private final ConcurrentHashMap<String, SymbolDepthCache> spotDepthCache;
+    private final ConcurrentHashMap<String, SymbolDepthCache> futureDepthCache;
 
     public DepthCache(@Value("${symbols}") List<String> symbols) {
-        depthCache = new ConcurrentHashMap<>();
+        spotDepthCache = new ConcurrentHashMap<>();
+        futureDepthCache = new ConcurrentHashMap<>();
         this.symbols = symbols;
-        this.symbols.forEach(symbol -> depthCache.put(symbol, new SymbolDepthCache()));
+        this.symbols.forEach(symbol -> {
+            spotDepthCache.put(symbol, new SymbolDepthCache());
+            futureDepthCache.put(symbol, new SymbolDepthCache());
+        });
     }
 
-    public void addCacheValues(String symbol, DepthResponse depthResponse) {
-        var symbolDepthCache = depthCache.get(symbol);
+    public void addSpotCacheValues(String symbol, DepthResponse depthResponse) {
+        var symbolDepthCache = spotDepthCache.get(symbol);
+        addCacheValues(symbolDepthCache, depthResponse);
+    }
+
+    public void addFutureCacheValues(String symbol, DepthResponse depthResponse) {
+        var symbolDepthCache = futureDepthCache.get(symbol);
+        addCacheValues(symbolDepthCache, depthResponse);
+    }
+
+    private void addCacheValues(SymbolDepthCache symbolDepthCache, DepthResponse depthResponse) {
         if (symbolDepthCache.isCached()) {
             if (depthResponse.getLastUpdateId() > symbolDepthCache.getLastUpdateId()) {
                 symbolDepthCache.setLastUpdateId(depthResponse.getLastUpdateId());
@@ -34,12 +48,15 @@ public class DepthCache {
         }
     }
 
-    public ConcurrentHashMap<String, SymbolDepthCache> getDepthCache() {
-        return depthCache;
+    public ConcurrentHashMap<String, SymbolDepthCache> getSpotDepthCache() {
+        return spotDepthCache;
+    }
+    public ConcurrentHashMap<String, SymbolDepthCache> getFutureDepthCache() {
+        return futureDepthCache;
     }
 
     public void applySnapshot(String symbol, DepthRestResponse depthRestResponse) {
-        var symbolDepthCache = depthCache.get(symbol);
+        var symbolDepthCache = spotDepthCache.get(symbol);
         symbolDepthCache.setLastUpdateId(depthRestResponse.getLastUpdateId());
         symbolDepthCache.putBids(depthRestResponse.getBids());
         symbolDepthCache.putAsks(depthRestResponse.getAsks());
@@ -52,9 +69,14 @@ public class DepthCache {
         symbolDepthCache.setDepthResponses(null);
     }
 
-    public void reCreateCache() {
-        depthCache.clear();
-        symbols.forEach(symbol -> depthCache.put(symbol, new SymbolDepthCache()));
+    public void reCreateSpotCache() {
+        spotDepthCache.clear();
+        symbols.forEach(symbol -> spotDepthCache.put(symbol, new SymbolDepthCache()));
+    }
+
+    public void reCreateFutureCache() {
+        futureDepthCache.clear();
+        symbols.forEach(symbol -> futureDepthCache.put(symbol, new SymbolDepthCache()));
     }
 }
 

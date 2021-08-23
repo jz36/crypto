@@ -1,6 +1,5 @@
 package dev.zykov.model;
 
-import dev.zykov.rest.RestClient;
 import io.micronaut.core.annotation.Introspected;
 import lombok.AllArgsConstructor;
 import lombok.Data;
