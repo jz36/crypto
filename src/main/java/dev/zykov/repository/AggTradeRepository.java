@@ -1,7 +1,7 @@
 package dev.zykov.repository;
 
-import dev.zykov.model.future.AggTrade;
-import dev.zykov.model.future.AggTradeId;
+import dev.zykov.enity.future.AggTrade;
+import dev.zykov.enity.future.AggTradeId;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.r2dbc.annotation.R2dbcRepository;
