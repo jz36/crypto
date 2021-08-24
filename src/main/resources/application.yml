@@ -1,6 +1,19 @@
 micronaut:
   application:
     name: crypto
+  executors:
+    io:
+      type: fixed
+      nThreads: 75
 
 symbols: ethusdt,bnbusdt,maticusdt,adausdt,dogeusdt,dotusdt,uniusdt,solusdt,bchusdt,ltcusdt,linkusdt,xrpusdt,icpusdt,thetausdt,xlmusdt,vetusdt,etcusdt,filusdt,trxusdt,eosusdt,xmrusdt,ksmusdt,aaveusdt,neousdt,bsvusdt,mkrusdt,cakeusdt,iotausdt,algousdt,atomusdt,xtzusdt,avaxusdt,bttusdt,lunausdt,runeusdt,compusdt,hbarusdt,dashusdt,zecusdt
 reRunSocketTimeRate: 23h
+r2dbc:
+  datasources:
+    default:
+      host: localhost
+      password: crypto
+      username: crypto
+      schema-generate: none
+      driver: postgresql
+      database: crypto

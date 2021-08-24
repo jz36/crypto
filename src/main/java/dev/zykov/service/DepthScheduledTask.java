@@ -14,14 +14,14 @@ public class DepthScheduledTask {
     private final FutureSocketClient futureSocketClient;
     private final DepthCache depthCache;
 
-    @Scheduled(fixedRate = "${reRunSocketTimeRate: 23h}" )
+//    @Scheduled(fixedRate = "${reRunSocketTimeRate: 23h}" )
     public void reRunSpotSockets() {
         spotSocketClient.closeAllSpotSockets();
         depthCache.reCreateSpotCache();
         spotSocketClient.runSpotSockets();
     }
 
-    @Scheduled(fixedRate = "${reRunSocketTimeRate: 23h}" )
+//    @Scheduled(fixedRate = "${reRunSocketTimeRate: 23h}" )
     public void reRunFutureSockets() {
         futureSocketClient.closeAllFutureSockets();
         depthCache.reCreateFutureCache();
