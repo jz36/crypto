@@ -4,6 +4,7 @@ import dev.zykov.entity.future.agg_trade.FutureAggTrade;
 import dev.zykov.entity.future.agg_trade.FutureAggTradeId;
 import dev.zykov.model.AggTradeModel;
 import dev.zykov.repository.future.FutureAggTradeRepository;
+import dev.zykov.service.SocketCache;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.websocket.WebSocketSession;
 import io.micronaut.websocket.annotation.ClientWebSocket;
@@ -22,7 +23,7 @@ public abstract class FutureAggregateStream implements AutoCloseable {
     private HttpRequest request;
     private String symbol;
     @Inject
-    private FutureAggTradeRepository aggTradeRepository;
+    private SocketCache socketCache;
 
     @OnOpen
     public void onOpen(String symbol, WebSocketSession session, HttpRequest request) {
@@ -34,21 +35,7 @@ public abstract class FutureAggregateStream implements AutoCloseable {
 
     @OnMessage
     public void onMessage(AggTradeModel message) {
-        Single.fromPublisher(aggTradeRepository.save(FutureAggTrade.builder()
-                .futureAggTradeId(FutureAggTradeId.builder()
-                        .aggregateTradeId(message.getAggregateTradeId())
-                        .symbol(message.getSymbol())
-                        .build())
-                .eventTime(message.getEventTime())
-                .eventType(message.getEventType())
-                .firstTradeId(message.getFirstTradeId())
-                .isMarketMaker(message.getIsMarketMaker())
-                .lastTradeId(message.getLastTradeId())
-                .price(message.getPrice())
-                .quantity(message.getQuantity())
-                .tradeTime(message.getTradeTime())
-                .build()
-        )).subscribe();
+        socketCache.addFutureAggTrade(message);
     }
 
     @OnClose

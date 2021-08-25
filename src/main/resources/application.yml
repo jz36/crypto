@@ -17,3 +17,7 @@ r2dbc:
       schema-generate: none
       driver: postgresql
       database: crypto
+endpoints:
+  all:
+    enabled: true
+    sensitive: false

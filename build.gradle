@@ -35,6 +35,7 @@ dependencies {
     implementation("co.oril:binance-api-client-java:1.0.3")
     implementation("io.micronaut.data:micronaut-data-r2dbc")
     implementation("io.micronaut.r2dbc:micronaut-r2dbc-core")
+    implementation("io.micronaut:micronaut-management")
     implementation 'io.r2dbc:r2dbc-pool:0.8.7.RELEASE'
     runtimeOnly("io.r2dbc:r2dbc-postgresql")
     runtimeOnly("org.postgresql:postgresql")

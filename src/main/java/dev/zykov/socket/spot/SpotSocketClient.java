@@ -2,7 +2,6 @@ package dev.zykov.socket.spot;
 
 import dev.zykov.rest.SpotRestClient;
 import dev.zykov.service.DepthCache;
-import dev.zykov.socket.future.FutureAggregateStream;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.rxjava2.http.client.websockets.RxWebSocketClient;
@@ -30,7 +29,7 @@ public class SpotSocketClient {
     private List<String> symbols;
 
     private ConcurrentHashMap<String, SpotDepthStream> spotStreamsMap = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, FutureAggregateStream> spotAggTradeMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, SpotAggregateStream> spotAggTradeMap = new ConcurrentHashMap<>();
 
 
     public void runSpotSockets() {
@@ -58,13 +57,13 @@ public class SpotSocketClient {
     public void runAggTrade() {
         symbols.forEach(t -> spotAggTradeMap.put(
                 t,
-                spotWebSocketClient.connect(FutureAggregateStream.class,
+                spotWebSocketClient.connect(SpotAggregateStream.class,
                         String.format("/ws/%s@aggTrade", t)).blockingFirst()
         ));
     }
 
     public void closeAggTrade() {
-        spotAggTradeMap.forEach((k,v) -> {
+        spotAggTradeMap.forEach((k, v) -> {
             if (v != null && v.getSession() != null)
                 v.getSession().close(CloseReason.NORMAL);
         });

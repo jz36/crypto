@@ -13,13 +13,13 @@ public class AggTradeScheduledTask {
     private final FutureSocketClient futureSocketClient;
     private final SpotSocketClient spotSocketClient;
 
-//    @Scheduled(fixedRate = "23h")
+    @Scheduled(fixedRate = "23h")
     public void runFutureAggTrade() {
         futureSocketClient.closeAggTrade();
         futureSocketClient.runAggTrade();
     }
 
-//    @Scheduled(fixedRate = "23h")
+    @Scheduled(fixedRate = "23h")
     public void runSpotAggTrade() {
         spotSocketClient.closeAggTrade();
         spotSocketClient.runAggTrade();

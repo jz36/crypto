@@ -7,6 +7,7 @@ import dev.zykov.entity.spot.depth.SpotDepthId;
 import dev.zykov.model.DepthResponse;
 import dev.zykov.repository.spot.SpotDepthRepository;
 import dev.zykov.service.DepthCache;
+import dev.zykov.service.SocketCache;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.websocket.WebSocketSession;
 import io.micronaut.websocket.annotation.ClientWebSocket;
@@ -30,7 +31,7 @@ public abstract class SpotDepthStream implements AutoCloseable{
     @Inject
     private DepthCache depthCache;
     @Inject
-    private SpotDepthRepository spotDepthRepository;
+    private SocketCache socketCache;
 
     @OnOpen
     public void onOpen(String symbol, WebSocketSession session, HttpRequest request) {
@@ -42,18 +43,7 @@ public abstract class SpotDepthStream implements AutoCloseable{
 
     @OnMessage
     public void onMessage(DepthResponse message) {
-        Single.fromPublisher(spotDepthRepository.save(SpotDepth.builder()
-                .spotDepthId(SpotDepthId.builder()
-                        .firstUpdateId(message.getFirstUpdateId())
-                        .symbol(message.getSymbol())
-                        .build())
-                .eventTime(message.getEventTime())
-                .lastUpdateId(message.getLastUpdateId())
-                .lastUpdateIdInLastStream(message.getLastUpdateIdInLastStream())
-                .transactionTime(message.getTransactionTime())
-                .bids(message.getAsks())
-                .asks(message.getAsks())
-                .build())).subscribe();
+        socketCache.addSpotDepth(message);
         depthCache.addSpotCacheValues(message.getSymbol().toLowerCase(Locale.ROOT), message);
     }
 

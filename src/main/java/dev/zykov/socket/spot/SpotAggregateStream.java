@@ -4,6 +4,7 @@ import dev.zykov.entity.spot.agg_trade.SportAggTradeId;
 import dev.zykov.entity.spot.agg_trade.SpotAggTrade;
 import dev.zykov.model.AggTradeModel;
 import dev.zykov.repository.spot.SpotAggTradeRepository;
+import dev.zykov.service.SocketCache;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.websocket.WebSocketSession;
 import io.micronaut.websocket.annotation.ClientWebSocket;
@@ -22,7 +23,7 @@ public abstract class SpotAggregateStream implements AutoCloseable {
     private HttpRequest request;
     private String symbol;
     @Inject
-    private SpotAggTradeRepository spotAggTradeRepository;
+    private SocketCache socketCache;
 
     @OnOpen
     public void onOpen(String symbol, WebSocketSession session, HttpRequest request) {
@@ -34,21 +35,7 @@ public abstract class SpotAggregateStream implements AutoCloseable {
 
     @OnMessage
     public void onMessage(AggTradeModel message) {
-        Single.fromPublisher(spotAggTradeRepository.save(SpotAggTrade.builder()
-                .sportAggTradeId(SportAggTradeId.builder()
-                        .aggregateTradeId(message.getAggregateTradeId())
-                        .symbol(message.getSymbol())
-                        .build())
-                .eventTime(message.getEventTime())
-                .eventType(message.getEventType())
-                .firstTradeId(message.getFirstTradeId())
-                .isMarketMaker(message.getIsMarketMaker())
-                .lastTradeId(message.getLastTradeId())
-                .price(message.getPrice())
-                .quantity(message.getQuantity())
-                .tradeTime(message.getTradeTime())
-                .build()
-        )).subscribe();
+        socketCache.addSpotAggTrade(message);
     }
 
     @OnClose
