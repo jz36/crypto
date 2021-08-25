@@ -38,9 +38,11 @@ public class DepthResponse {
     @JsonProperty("pu")
     private Long lastUpdateIdInLastStream;
 
+//    @JsonDeserialize(as = String.class, using = MyJsonSerializer.class)
     @JsonProperty("b")
     private List<List<BigDecimal>> bids;
 
+//    @JsonDeserialize(as = String.class, using = MyJsonSerializer.class)
     @JsonProperty("a")
     private List<List<BigDecimal>> asks;
 }

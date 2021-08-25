@@ -1,6 +1,5 @@
-package dev.zykov.enity.future;
+package dev.zykov.entity.future.agg_trade;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import io.micronaut.core.annotation.Introspected;
 import lombok.AllArgsConstructor;
@@ -16,13 +15,13 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 @Introspected
-@Table(name = "agg_trade")
+@Table(name = "agg_trade", schema = "future")
 @Entity
-public class AggTrade implements Serializable {
+public class FutureAggTrade implements Serializable {
 
     @EmbeddedId
     @JsonUnwrapped
-    private AggTradeId aggTradeId;
+    private FutureAggTradeId futureAggTradeId;
 
     @Column(name = "event_type")
     private String eventType;

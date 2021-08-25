@@ -1,6 +1,5 @@
-package dev.zykov.enity.future;
+package dev.zykov.entity.spot.depth;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,10 +14,10 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AggTradeId implements Serializable{
+public class SpotDepthId implements Serializable {
 
-    @Column(name = "aggregate_trade_id")
-    private Long aggregateTradeId;
+    @Column(name = "first_update_id")
+    private Long firstUpdateId;
 
     @Column(name = "symbol")
     private String symbol;

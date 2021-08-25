@@ -1,6 +1,11 @@
 package dev.zykov.socket.future;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.zykov.entity.future.depth.FutureDepth;
+import dev.zykov.entity.future.depth.FutureDepthId;
 import dev.zykov.model.DepthResponse;
+import dev.zykov.repository.future.FutureDepthRepository;
 import dev.zykov.service.DepthCache;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.websocket.WebSocketSession;
@@ -8,21 +13,27 @@ import io.micronaut.websocket.annotation.ClientWebSocket;
 import io.micronaut.websocket.annotation.OnClose;
 import io.micronaut.websocket.annotation.OnMessage;
 import io.micronaut.websocket.annotation.OnOpen;
+import io.reactivex.Single;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
 @Slf4j
 @ClientWebSocket("/ws/{symbol}@depth@100ms")
-public abstract class FutureDepthStream implements AutoCloseable{
+public abstract class FutureDepthStream implements AutoCloseable {
 
     private WebSocketSession session;
     private HttpRequest request;
     private String symbol;
     @Inject
     private DepthCache depthCache;
+    @Inject
+    private FutureDepthRepository futureDepthRepository;
+    @Inject
+    private ObjectMapper objectMapper;
 
     @OnOpen
     public void onOpen(String symbol, WebSocketSession session, HttpRequest request) {
@@ -34,6 +45,18 @@ public abstract class FutureDepthStream implements AutoCloseable{
 
     @OnMessage
     public void onMessage(DepthResponse message) {
+        Single.fromPublisher(futureDepthRepository.save(FutureDepth.builder()
+                .futureDepthId(FutureDepthId.builder()
+                        .firstUpdateId(message.getFirstUpdateId())
+                        .symbol(message.getSymbol())
+                        .build())
+                .eventTime(message.getEventTime())
+                .lastUpdateId(message.getLastUpdateId())
+                .lastUpdateIdInLastStream(message.getLastUpdateIdInLastStream())
+                .transactionTime(message.getTransactionTime())
+                .bids(message.getAsks())
+                .asks(message.getAsks())
+                .build())).subscribe();
         depthCache.addFutureCacheValues(message.getSymbol().toLowerCase(Locale.ROOT), message);
     }
 

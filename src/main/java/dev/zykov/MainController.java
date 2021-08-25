@@ -1,12 +1,18 @@
 package dev.zykov;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.zykov.entity.future.depth.FutureDepth;
+import dev.zykov.entity.future.depth.FutureDepthId;
+import dev.zykov.model.DepthResponse;
 import dev.zykov.model.SymbolDepthCache;
+import dev.zykov.repository.future.FutureDepthRepository;
 import dev.zykov.service.DepthCache;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.PathVariable;
+import io.micronaut.http.annotation.*;
+import io.reactivex.Single;
 import lombok.RequiredArgsConstructor;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 
 @Controller
@@ -14,6 +20,8 @@ import java.util.Enumeration;
 public class MainController {
 
     private final DepthCache depthCache;
+    private final FutureDepthRepository futureDepthRepository;
+    private final ObjectMapper objectMapper;
 
     @Get("/depth/spot")
     public Enumeration<String> getSpotSymbols() {
@@ -37,6 +45,22 @@ public class MainController {
     public SymbolDepthCache getFutureDepthCache(@PathVariable String symbol) {
         return depthCache.getFutureDepthCache()
                 .get(symbol);
+    }
+
+    @Post("/test")
+    public Single<FutureDepth> save(@Body DepthResponse message) throws JsonProcessingException {
+        return Single.fromPublisher(futureDepthRepository.save(FutureDepth.builder()
+                .futureDepthId(FutureDepthId.builder()
+                        .firstUpdateId(message.getFirstUpdateId())
+                        .symbol(message.getSymbol())
+                        .build())
+                .eventTime(message.getEventTime())
+                .lastUpdateId(message.getLastUpdateId())
+                .lastUpdateIdInLastStream(message.getLastUpdateIdInLastStream())
+                .transactionTime(message.getTransactionTime())
+                .bids(message.getBids())
+                .asks(message.getAsks())
+                .build()));
     }
 
 }

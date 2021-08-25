@@ -1,11 +1,16 @@
 package dev.zykov.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.zykov.model.DepthResponse;
 import dev.zykov.model.DepthRestResponse;
 import dev.zykov.model.SymbolDepthCache;
 import io.micronaut.context.annotation.Value;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,8 +20,9 @@ public class DepthCache {
     private List<String> symbols;
     private final ConcurrentHashMap<String, SymbolDepthCache> spotDepthCache;
     private final ConcurrentHashMap<String, SymbolDepthCache> futureDepthCache;
+    private final ObjectMapper objectMapper;
 
-    public DepthCache(@Value("${symbols}") List<String> symbols) {
+    public DepthCache(@Value("${symbols}") List<String> symbols, @Singleton ObjectMapper objectMapper) {
         spotDepthCache = new ConcurrentHashMap<>();
         futureDepthCache = new ConcurrentHashMap<>();
         this.symbols = symbols;
@@ -24,6 +30,7 @@ public class DepthCache {
             spotDepthCache.put(symbol, new SymbolDepthCache());
             futureDepthCache.put(symbol, new SymbolDepthCache());
         });
+        this.objectMapper = objectMapper;
     }
 
     public void addSpotCacheValues(String symbol, DepthResponse depthResponse) {
@@ -51,6 +58,7 @@ public class DepthCache {
     public ConcurrentHashMap<String, SymbolDepthCache> getSpotDepthCache() {
         return spotDepthCache;
     }
+
     public ConcurrentHashMap<String, SymbolDepthCache> getFutureDepthCache() {
         return futureDepthCache;
     }

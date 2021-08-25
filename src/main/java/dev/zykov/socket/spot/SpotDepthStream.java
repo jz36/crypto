@@ -1,6 +1,11 @@
 package dev.zykov.socket.spot;
 
+import dev.zykov.entity.future.depth.FutureDepth;
+import dev.zykov.entity.future.depth.FutureDepthId;
+import dev.zykov.entity.spot.depth.SpotDepth;
+import dev.zykov.entity.spot.depth.SpotDepthId;
 import dev.zykov.model.DepthResponse;
+import dev.zykov.repository.spot.SpotDepthRepository;
 import dev.zykov.service.DepthCache;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.websocket.WebSocketSession;
@@ -8,6 +13,7 @@ import io.micronaut.websocket.annotation.ClientWebSocket;
 import io.micronaut.websocket.annotation.OnClose;
 import io.micronaut.websocket.annotation.OnMessage;
 import io.micronaut.websocket.annotation.OnOpen;
+import io.reactivex.Single;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +29,8 @@ public abstract class SpotDepthStream implements AutoCloseable{
     private String symbol;
     @Inject
     private DepthCache depthCache;
+    @Inject
+    private SpotDepthRepository spotDepthRepository;
 
     @OnOpen
     public void onOpen(String symbol, WebSocketSession session, HttpRequest request) {
@@ -34,6 +42,18 @@ public abstract class SpotDepthStream implements AutoCloseable{
 
     @OnMessage
     public void onMessage(DepthResponse message) {
+        Single.fromPublisher(spotDepthRepository.save(SpotDepth.builder()
+                .spotDepthId(SpotDepthId.builder()
+                        .firstUpdateId(message.getFirstUpdateId())
+                        .symbol(message.getSymbol())
+                        .build())
+                .eventTime(message.getEventTime())
+                .lastUpdateId(message.getLastUpdateId())
+                .lastUpdateIdInLastStream(message.getLastUpdateIdInLastStream())
+                .transactionTime(message.getTransactionTime())
+                .bids(message.getAsks())
+                .asks(message.getAsks())
+                .build())).subscribe();
         depthCache.addSpotCacheValues(message.getSymbol().toLowerCase(Locale.ROOT), message);
     }
 

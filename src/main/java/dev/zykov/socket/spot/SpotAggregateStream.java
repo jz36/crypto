@@ -1,9 +1,9 @@
-package dev.zykov.socket.future;
+package dev.zykov.socket.spot;
 
-import dev.zykov.entity.future.agg_trade.FutureAggTrade;
-import dev.zykov.entity.future.agg_trade.FutureAggTradeId;
+import dev.zykov.entity.spot.agg_trade.SportAggTradeId;
+import dev.zykov.entity.spot.agg_trade.SpotAggTrade;
 import dev.zykov.model.AggTradeModel;
-import dev.zykov.repository.future.FutureAggTradeRepository;
+import dev.zykov.repository.spot.SpotAggTradeRepository;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.websocket.WebSocketSession;
 import io.micronaut.websocket.annotation.ClientWebSocket;
@@ -16,26 +16,26 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ClientWebSocket("/ws/{symbol}@aggTrade")
-public abstract class FutureAggregateStream implements AutoCloseable {
+public abstract class SpotAggregateStream implements AutoCloseable {
 
     private WebSocketSession session;
     private HttpRequest request;
     private String symbol;
     @Inject
-    private FutureAggTradeRepository aggTradeRepository;
+    private SpotAggTradeRepository spotAggTradeRepository;
 
     @OnOpen
     public void onOpen(String symbol, WebSocketSession session, HttpRequest request) {
         this.session = session;
         this.request = request;
         this.symbol = symbol;
-        log.info("Open future aggTrade for {}", symbol);
+        log.info("Open spot aggTrade for {}", symbol);
     }
 
     @OnMessage
     public void onMessage(AggTradeModel message) {
-        Single.fromPublisher(aggTradeRepository.save(FutureAggTrade.builder()
-                .futureAggTradeId(FutureAggTradeId.builder()
+        Single.fromPublisher(spotAggTradeRepository.save(SpotAggTrade.builder()
+                .sportAggTradeId(SportAggTradeId.builder()
                         .aggregateTradeId(message.getAggregateTradeId())
                         .symbol(message.getSymbol())
                         .build())
@@ -53,7 +53,7 @@ public abstract class FutureAggregateStream implements AutoCloseable {
 
     @OnClose
     public void onClose() {
-        log.info("Close future aggTrade for {}", symbol);
+        log.info("Close spot aggTrade for {}", symbol);
     }
 
     public WebSocketSession getSession() {
