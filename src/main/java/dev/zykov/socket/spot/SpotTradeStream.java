@@ -1,6 +1,7 @@
 package dev.zykov.socket.spot;
 
-import dev.zykov.model.DepthResponse;
+import dev.zykov.model.AggTradeModel;
+import dev.zykov.model.TradeModel;
 import dev.zykov.service.DepthCache;
 import dev.zykov.service.SocketCache;
 import io.micronaut.http.HttpRequest;
@@ -12,17 +13,13 @@ import io.micronaut.websocket.annotation.OnOpen;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Locale;
-
 @Slf4j
-@ClientWebSocket("/ws/{symbol}@depth@100ms")
-public abstract class SpotDepthStream implements AutoCloseable{
+@ClientWebSocket("/ws/{symbol}@trade")
+public abstract class SpotTradeStream implements AutoCloseable{
 
     private WebSocketSession session;
     private HttpRequest request;
     private String symbol;
-    @Inject
-    private DepthCache depthCache;
     @Inject
     private SocketCache socketCache;
 
@@ -31,18 +28,17 @@ public abstract class SpotDepthStream implements AutoCloseable{
         this.session = session;
         this.request = request;
         this.symbol = symbol;
-        log.info("Open spot depth for {}", symbol);
+        log.info("Open spot trade for {}", symbol);
     }
 
     @OnMessage
-    public void onMessage(DepthResponse message) {
-        socketCache.addSpotDepth(message);
-        depthCache.addSpotCacheValues(message.getSymbol().toLowerCase(Locale.ROOT), message);
+    public void onMessage(TradeModel message) {
+        socketCache.addSpotTrade(message);
     }
 
     @OnClose
     public void onClose() {
-        log.info("Close spot depth for {}", symbol);
+        log.info("Close spot trade for {}", symbol);
     }
 
     public WebSocketSession getSession() {

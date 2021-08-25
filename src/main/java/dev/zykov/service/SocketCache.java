@@ -8,12 +8,16 @@ import dev.zykov.entity.spot.agg_trade.SportAggTradeId;
 import dev.zykov.entity.spot.agg_trade.SpotAggTrade;
 import dev.zykov.entity.spot.depth.SpotDepth;
 import dev.zykov.entity.spot.depth.SpotDepthId;
+import dev.zykov.entity.spot.trade.Trade;
+import dev.zykov.entity.spot.trade.TradeId;
 import dev.zykov.model.AggTradeModel;
 import dev.zykov.model.DepthResponse;
+import dev.zykov.model.TradeModel;
 import dev.zykov.repository.future.FutureAggTradeRepository;
 import dev.zykov.repository.future.FutureDepthRepository;
 import dev.zykov.repository.spot.SpotAggTradeRepository;
 import dev.zykov.repository.spot.SpotDepthRepository;
+import dev.zykov.repository.spot.TradeRepository;
 import io.reactivex.Flowable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -27,6 +31,7 @@ public class SocketCache {
     private final ConcurrentLinkedQueue<DepthResponse> spotDepth = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<AggTradeModel> futureAggTrade = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<AggTradeModel> spotAggTrade = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<TradeModel> spotTrade = new ConcurrentLinkedQueue<>();
     @Inject
     private FutureAggTradeRepository futureAggTradeRepository;
     @Inject
@@ -35,6 +40,8 @@ public class SocketCache {
     private SpotAggTradeRepository spotAggTradeRepository;
     @Inject
     private SpotDepthRepository spotDepthRepository;
+    @Inject
+    private TradeRepository tradeRepository;
 
     public void addFutureDepth(DepthResponse depthResponse) {
         futureDepth.add(depthResponse);
@@ -51,6 +58,8 @@ public class SocketCache {
     public void addSpotAggTrade(AggTradeModel aggTradeModel) {
         spotAggTrade.add(aggTradeModel);
     }
+
+    public void addSpotTrade(TradeModel tradeModel) {spotTrade.add(tradeModel);}
 
     public void saveAndResetFutureDepth() {
         if (futureDepth.size() > 0) {
@@ -140,5 +149,26 @@ public class SocketCache {
         }
     }
 
+    public void saveAndResetSpotTrade() {
+        if (spotTrade.size() > 0) {
+            var publisher = tradeRepository.saveAll(spotTrade.stream()
+                    .map(t -> Trade.builder()
+                            .tradeId(TradeId.builder()
+                                    .tradeId(t.getTradeId())
+                                    .symbol(t.getSymbol())
+                                    .build())
+                            .buyer(t.getBuyer())
+                            .seller(t.getSeller())
+                            .isBuyerTheMarketMaker(t.getIsBuyerTheMarketMaker())
+                            .tradeTime(t.getTradeTime())
+                            .price(t.getPrice())
+                            .quantity(t.getQuantity())
+                            .eventTime(t.getEventTime())
+                            .build())
+                    .toList());
+            spotTrade.clear();
+            Flowable.fromPublisher(publisher).subscribe();
+        }
+    }
 
 }

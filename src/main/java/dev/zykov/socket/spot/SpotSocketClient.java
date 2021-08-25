@@ -30,6 +30,7 @@ public class SpotSocketClient {
 
     private ConcurrentHashMap<String, SpotDepthStream> spotStreamsMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, SpotAggregateStream> spotAggTradeMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, SpotTradeStream> spotTradeMap = new ConcurrentHashMap<>();
 
 
     public void runSpotSockets() {
@@ -68,5 +69,21 @@ public class SpotSocketClient {
                 v.getSession().close(CloseReason.NORMAL);
         });
         spotAggTradeMap.clear();
+    }
+
+    public void runTrade() {
+        symbols.forEach(t -> spotTradeMap.put(
+                t,
+                spotWebSocketClient.connect(SpotTradeStream.class,
+                        String.format("/ws/%s@trade", t)).blockingFirst()
+        ));
+    }
+
+    public void closeTrade() {
+        spotTradeMap.forEach((k, v) -> {
+            if (v != null && v.getSession() != null)
+                v.getSession().close(CloseReason.NORMAL);
+        });
+        spotTradeMap.clear();
     }
 }

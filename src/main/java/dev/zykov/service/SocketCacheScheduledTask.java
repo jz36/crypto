@@ -29,4 +29,9 @@ public class SocketCacheScheduledTask {
     public void saveSpotAggTrade(){
         socketCache.saveAndResetSpotAggTrade();
     }
+
+    @Scheduled(fixedRate = "1m", initialDelay = "1m")
+    public void saveSpotTrade(){
+        socketCache.saveAndResetSpotTrade();
+    }
 }
