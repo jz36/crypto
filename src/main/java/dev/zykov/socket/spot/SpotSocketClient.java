@@ -2,6 +2,7 @@ package dev.zykov.socket.spot;
 
 import dev.zykov.rest.SpotRestClient;
 import dev.zykov.service.DepthCache;
+import dev.zykov.socket.future.FutureKlineCandlestickStream;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.rxjava2.http.client.websockets.RxWebSocketClient;
@@ -31,6 +32,8 @@ public class SpotSocketClient {
     private ConcurrentHashMap<String, SpotDepthStream> spotStreamsMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, SpotAggregateStream> spotAggTradeMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, SpotTradeStream> spotTradeMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, SpotKlineCandlestickStream> spotKlineCandlestickMap = new ConcurrentHashMap<>();
+
 
 
     public void runSpotSockets() {
@@ -85,5 +88,21 @@ public class SpotSocketClient {
                 v.getSession().close(CloseReason.NORMAL);
         });
         spotTradeMap.clear();
+    }
+
+    public void runKlineCandlestick() {
+        symbols.forEach(t -> spotKlineCandlestickMap.put(
+                t,
+                spotWebSocketClient.connect(SpotKlineCandlestickStream.class,
+                        String.format("/ws/%s@kline_1m", t)).blockingFirst()
+        ));
+    }
+
+    public void closeKlineCandlestick() {
+        spotKlineCandlestickMap.forEach((k,v) -> {
+            if (v != null && v.getSession() != null)
+                v.getSession().close(CloseReason.NORMAL);
+        });
+        spotKlineCandlestickMap.clear();
     }
 }

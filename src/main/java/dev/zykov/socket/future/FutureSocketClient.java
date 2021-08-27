@@ -28,6 +28,7 @@ public class FutureSocketClient {
 
     private ConcurrentHashMap<String, FutureDepthStream> futureDepthStreamsMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, FutureAggregateStream> futureAggTradeMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, FutureKlineCandlestickStream> futureKlineCandlestickMap = new ConcurrentHashMap<>();
 
     public void runFutureSockets() {
         depthCache.getFutureDepthCache().keySet()
@@ -65,5 +66,21 @@ public class FutureSocketClient {
                 v.getSession().close(CloseReason.NORMAL);
         });
         futureAggTradeMap.clear();
+    }
+
+    public void runKlineCandlestick() {
+        symbols.forEach(t -> futureKlineCandlestickMap.put(
+                t,
+                futureWebSocketClient.connect(FutureKlineCandlestickStream.class,
+                        String.format("/ws/%s@kline_1m", t)).blockingFirst()
+        ));
+    }
+
+    public void closeKlineCandlestick() {
+        futureKlineCandlestickMap.forEach((k,v) -> {
+            if (v != null && v.getSession() != null)
+                v.getSession().close(CloseReason.NORMAL);
+        });
+        futureKlineCandlestickMap.clear();
     }
 }

@@ -34,4 +34,14 @@ public class SocketCacheScheduledTask {
     public void saveSpotTrade(){
         socketCache.saveAndResetSpotTrade();
     }
+
+    @Scheduled(fixedRate = "1m", initialDelay = "1m")
+    public void saveFutureKlineCandlestick(){
+        socketCache.saveAndResetFutureKlineCandlestick();
+    }
+
+    @Scheduled(fixedRate = "1m", initialDelay = "1m")
+    public void saveSpotKlineCandlestick(){
+        socketCache.saveAndResetSpotKlineCandlestick();
+    }
 }
