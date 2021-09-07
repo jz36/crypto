@@ -1,6 +1,7 @@
 FROM openjdk:16-alpine as build
 WORKDIR /app
 COPY . /app
+RUN chmod +x gradlew
 RUN ./gradlew build -x test
 
 FROM openjdk:16-alpine
