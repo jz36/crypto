@@ -95,7 +95,7 @@ public class SocketCache {
                             .lastUpdateId(t.getLastUpdateId())
                             .lastUpdateIdInLastStream(t.getLastUpdateIdInLastStream())
                             .transactionTime(t.getTransactionTime())
-                            .bids(t.getAsks())
+                            .bids(t.getBids())
                             .asks(t.getAsks())
                             .build())
                     .toList());
@@ -116,7 +116,7 @@ public class SocketCache {
                             .lastUpdateId(t.getLastUpdateId())
                             .lastUpdateIdInLastStream(t.getLastUpdateIdInLastStream())
                             .transactionTime(t.getTransactionTime())
-                            .bids(t.getAsks())
+                            .bids(t.getBids())
                             .asks(t.getAsks())
                             .build())
                     .toList());

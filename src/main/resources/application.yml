@@ -11,9 +11,9 @@ reRunSocketTimeRate: 23h
 r2dbc:
   datasources:
     default:
-      host: localhost
-      password: crypto
-      username: crypto
+      host: tmp-test.cqhgusnnqgim.us-east-2.rds.amazonaws.com
+      password: u&xg9b^R#wVM3m&%
+      username: test
       schema-generate: none
       driver: postgresql
       database: crypto
