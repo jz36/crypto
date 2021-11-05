@@ -19,9 +19,9 @@ public class KlineCandlestickScheduledTask {
         futureSocketClient.runKlineCandlestick();
     }
 
-    @Scheduled(fixedRate = "23h")
-    public void runSpotAggTrade() {
-        spotSocketClient.closeKlineCandlestick();
-        spotSocketClient.runKlineCandlestick();
-    }
+//    @Scheduled(fixedRate = "23h")
+//    public void runSpotAggTrade() {
+//        spotSocketClient.closeKlineCandlestick();
+//        spotSocketClient.runKlineCandlestick();
+//    }
 }

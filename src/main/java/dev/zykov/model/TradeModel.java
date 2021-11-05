@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.TreeMap;
 
 @Introspected
 @Builder
@@ -42,5 +43,7 @@ public class TradeModel {
 
     @JsonProperty("m")
     private Boolean isBuyerTheMarketMaker;
+    
+    TreeMap
 
 }

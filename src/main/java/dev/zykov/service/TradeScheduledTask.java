@@ -12,9 +12,9 @@ public class TradeScheduledTask {
     @Inject
     private SpotSocketClient spotSocketClient;
 
-    @Scheduled(fixedRate = "23h")
-    public void runSpotrade() {
-        spotSocketClient.closeTrade();
-        spotSocketClient.runTrade();
-    }
+//    @Scheduled(fixedRate = "23h")
+//    public void runSpotrade() {
+//        spotSocketClient.closeTrade();
+//        spotSocketClient.runTrade();
+//    }
 }

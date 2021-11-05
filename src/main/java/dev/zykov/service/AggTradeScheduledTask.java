@@ -19,10 +19,10 @@ public class AggTradeScheduledTask {
         futureSocketClient.runAggTrade();
     }
 
-    @Scheduled(fixedRate = "23h")
-    public void runSpotAggTrade() {
-        spotSocketClient.closeAggTrade();
-        spotSocketClient.runAggTrade();
-    }
+//    @Scheduled(fixedRate = "23h")
+//    public void runSpotAggTrade() {
+//        spotSocketClient.closeAggTrade();
+//        spotSocketClient.runAggTrade();
+//    }
 
 }

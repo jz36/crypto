@@ -15,33 +15,33 @@ public class SocketCacheScheduledTask {
         socketCache.saveAndResetFutureDepth();
     }
 
-    @Scheduled(fixedRate = "1m", initialDelay = "1m")
-    public void saveSpotDepth(){
-        socketCache.saveAndResetSpotDepth();
-    }
+//    @Scheduled(fixedRate = "1m", initialDelay = "1m")
+//    public void saveSpotDepth(){
+//        socketCache.saveAndResetSpotDepth();
+//    }
 
     @Scheduled(fixedRate = "1m", initialDelay = "1m")
     public void saveFutureAggTrade(){
         socketCache.saveAndResetFutureAggTrade();
     }
+//
+//    @Scheduled(fixedRate = "1m", initialDelay = "1m")
+//    public void saveSpotAggTrade(){
+//        socketCache.saveAndResetSpotAggTrade();
+//    }
 
-    @Scheduled(fixedRate = "1m", initialDelay = "1m")
-    public void saveSpotAggTrade(){
-        socketCache.saveAndResetSpotAggTrade();
-    }
-
-    @Scheduled(fixedRate = "1m", initialDelay = "1m")
-    public void saveSpotTrade(){
-        socketCache.saveAndResetSpotTrade();
-    }
+//    @Scheduled(fixedRate = "1m", initialDelay = "1m")
+//    public void saveSpotTrade(){
+//        socketCache.saveAndResetSpotTrade();
+//    }
 
     @Scheduled(fixedRate = "1m", initialDelay = "1m")
     public void saveFutureKlineCandlestick(){
         socketCache.saveAndResetFutureKlineCandlestick();
     }
 
-    @Scheduled(fixedRate = "1m", initialDelay = "1m")
-    public void saveSpotKlineCandlestick(){
-        socketCache.saveAndResetSpotKlineCandlestick();
-    }
+//    @Scheduled(fixedRate = "1m", initialDelay = "1m")
+//    public void saveSpotKlineCandlestick(){
+//        socketCache.saveAndResetSpotKlineCandlestick();
+//    }
 }
